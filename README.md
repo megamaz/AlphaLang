@@ -31,7 +31,7 @@ There are a total of 13 instructions;
 Any letters whos ID is >= 13 will be considered "out of bounds", and instead of throwing an error will instead do nothing. The alphabet will still be shifted accordingly, even if the instruction itself did not do anything.
 
 ## Samples
-Here's a simple, unoptimized, "Hello World" program.
+Here's a simple, unoptimized, "Hello World" program. (It's unoptimized since it does not make use of the queue system and pops / repushes repeated letters.)
 ```
 dCUjnqDXwadEEjptwEHcgjBGptwDJcgjEHptwEKcgjEEptwDWc
 ```
