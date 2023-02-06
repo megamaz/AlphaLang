@@ -42,3 +42,8 @@ Here's an infinite while loop
 adHIhseF
 ```
 the `a` instruction resets the alphabet, and the `seF` skips -5 back to the `a`. the `dHIh` is a useless command that pushes then pops.
+### Infinite Counting Loop
+```
+dAadBkwiF
+```
+`dA` starts by pushing 0. The `a` resets the alphabet. `dB` pushes 1, and `k` adds the two pushed values. then `wiF` skips -5 back to the `a`.
