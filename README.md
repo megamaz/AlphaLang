@@ -1,6 +1,7 @@
 # AlphaLang
 An esoteric programming language I designed that uses all letters of the alphabet, both uppercase and lowercase, for a total of 52 letters 
-
+# File format
+The preferred file type is `.al` though anything goes really.
 # Syntax
 Lowercase letters map to different instructions, and uppercase letters are used for a base26 number system (where `A` is 0, and `BA` is 26.)
 
