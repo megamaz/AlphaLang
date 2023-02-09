@@ -99,7 +99,58 @@ def interpret(code: str):
                 register_2 = queue[-1]
         reader_index += 1
 
+def instructions_to_alphalang(code: list[str]) -> str:
+    """Function that takes an instruction string and converts it to AlphaLang code
+    Each instruction is separated by a newline, with the value being a space away.
+    If the value is negative, just add a `-` sign, the code will detect it and add
+    the `-1` instruction automatically.
+
+    - `PASS` -> Do nothing
+    - `LASTP` -> Reference to last popped value
+    - `QUEUEB` -> Reference to queue's bottom value
+    - `PUSH [value]`
+    - `POP`
+    - `INPUT`
+    - `OUTPUT`
+    - `ADD`
+    - `SUB` -> Substract
+    - `MUL` -> Multiply
+    - `NOT`
+    - `SKIP [value]`
+    """
+    offset = 0
+    final = ""
+    indexes = {
+        "PASS":0,
+        "LASTP":1,
+        "QUEUEB":2,
+        "PUSH":3,
+        "POP":4,
+        "INPUT":5,
+        "OUTPUT":6,
+        "ADD":7,
+        "SUB":8,
+        "MUL":9,
+        "NOT":10,
+        "SKIP":11,
+    }
+    for i in code:
+        line = i.split(" ")
+        final += ALPHABET[(indexes[line[0]] + offset)%26]
+        offset = indexes[line[0]] + offset
+        offset %= 26
+        if len(line) != 1:
+            if line[1][0] == "-":
+                offset = (offset + 12) % 26
+                final += ALPHABET[offset]
+                final += base10_to_base26(int(line[1][1:]))
+            else:
+                final += base10_to_base26(int(line[1]))
+    return final
+
 if __name__ == "__main__":
+    # result = instructions_to_alphalang(open("./readable_codes/helloworld.ral").read().splitlines())
+    # print(result)
     code = open("./codes/helloworld.al").read()
     interpret(code)
     
