@@ -24,7 +24,7 @@ def base26_to_base10(value: str) -> int:
 def base10_to_base26(value: int) -> str:
     """Converts a normal base10 integer to a  base26 AlphaLang integer"""
     number = ""
-    b26alph = [x for x in "ABCDEFGHIJKLMNOPQRSUVWXYZ"]
+    b26alph = [x for x in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"]
     return ''.join([b26alph[i] for i in numberToBase(value, 26)])
 
 def interpret(code: str):
@@ -48,7 +48,7 @@ def interpret(code: str):
     reader_index = 0
     offset = 0
     next_value_is_negative = False
-    while True:
+    while reader_index < len(split_code):
         c = split_code[reader_index]
         negate = (-1 if next_value_is_negative else 1)
         if c.upper() != c and len(c) == 1: # if this is an instruction
