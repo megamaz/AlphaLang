@@ -55,6 +55,7 @@ def interpret(code: str):
             index = ALPHABET.index(c)
             index -= offset
             offset = ALPHABET.index(c)
+            index %= 26
             # now do the instruction
             if index == 3:
                 a = 1 + next_value_is_negative
@@ -149,8 +150,8 @@ def instructions_to_alphalang(code: list[str]) -> str:
     return final
 
 if __name__ == "__main__":
-    # result = instructions_to_alphalang(open("./readable_codes/helloworld.ral").read().splitlines())
-    # print(result)
+    result = instructions_to_alphalang(open("./readable_codes/helloworld.ral").read().splitlines())
+    print(result)
     code = open("./codes/helloworld.al").read()
     interpret(code)
     
