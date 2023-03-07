@@ -56,17 +56,32 @@ def interpret(code: str):
             index -= offset
             offset = ALPHABET.index(c)
             index %= 26
+            value = None
+            try:
+                next_instruction = ALPHABET.index(split_code[reader_index+1])
+                if split_code[reader_index+1].lower() == split_code[reader_index+1]:
+                    if next_instruction - offset == 12:
+                        value = -base26_to_base10(split_code[reader_index+2])
+                    elif next_instruction - offset == 1:
+                        value = register_1
+                    elif next_instruction - offset == 2:
+                        value = register_2
+                        
+            except IndexError:
+                pass
+            except ValueError:
+                # this means we have a number
+                value = base26_to_base10(split_code[reader_index+1])
+            
             # now do the instruction
             if index == 3:
-                a = 1 + next_value_is_negative
-                queue.append(base26_to_base10(split_code[reader_index+a]) * negate)
-                next_value_is_negative = False
+                queue.append(value)
             elif index == 4:
                 register_1 = queue.pop(0)
             elif index == 5:
                 queue.append(ord(input(""))[0])
             elif index == 6:
-                if next_value_is_negative:
+                if queue[0] < 0:
                     raise ValueError("Attempting to print a negative UTF-8 value")
                 print(chr(queue[0]), end='')
             elif index == 7:
@@ -88,12 +103,7 @@ def interpret(code: str):
                 register_1 = queue.pop(0)
                 queue.push(0 if register_1 != 0 else 1)
             elif index == 11:
-                a = 1 + next_value_is_negative
-                value = base26_to_base10(split_code[reader_index+a]) * negate
                 reader_index += value
-                next_value_is_negative = False
-            elif index == 12:
-                next_value_is_negative = True
 
             # update the register
             if len(queue) != 0:
@@ -150,8 +160,7 @@ def instructions_to_alphalang(code: list[str]) -> str:
     return final
 
 if __name__ == "__main__":
-    result = instructions_to_alphalang(open("./readable_codes/helloworld.ral").read().splitlines())
-    print(result)
+    # result = instructions_to_alphalang(open("./readable_codes/helloworld.ral").read().splitlines())
+    # print(result)
     code = open("./codes/helloworld.al").read()
     interpret(code)
-    
