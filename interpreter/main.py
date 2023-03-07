@@ -28,6 +28,8 @@ def base10_to_base26(value: int) -> str:
     return ''.join([b26alph[i] for i in numberToBase(value, 26)])
 
 def interpret(code: str):
+    # first we'll filter the code to only include letters
+    code = ''.join([x for x in code if x.lower() in ALPHABET])
     # we'll first split the code between instruction and values
     split_code = []
     value = ""
@@ -56,7 +58,7 @@ def interpret(code: str):
             index -= offset
             offset = ALPHABET.index(c)
             index %= 26
-            value = None
+            value = 0
             try:
                 next_instruction = ALPHABET.index(split_code[reader_index+1])
                 if split_code[reader_index+1].lower() == split_code[reader_index+1]:
@@ -77,31 +79,45 @@ def interpret(code: str):
             if index == 3:
                 queue.append(value)
             elif index == 4:
-                register_1 = queue.pop(0)
+                if len(queue) != 0:
+                    register_1 = queue.pop(0)
             elif index == 5:
-                queue.append(ord(input(""))[0])
+                queue.append(ord(input("")[0]))
             elif index == 6:
-                if queue[0] < 0:
-                    raise ValueError("Attempting to print a negative UTF-8 value")
-                print(chr(queue[0]), end='')
+                if len(queue) == 0:
+                    if queue[0] < 0:
+                        raise ValueError("Attempting to print a negative UTF-8 value")
+                    print(chr(queue[0]), end='')
             elif index == 7:
-                v1 = queue.pop(0)
-                v2 = queue.pop(0)
-                queue.append(v1 + v2)
-                register_1 = v2 # last popped value
+                if len(queue) > 1:
+                    v1 = queue.pop(0)
+                    v2 = queue.pop(0)
+                    queue.append(v1 + v2)
+                    register_1 = v2 # last popped value
+                else:
+                    queue.append(0)
             elif index == 8:
-                v1 = queue.pop(0)
-                v2 = queue.pop(0)
-                queue.append(v1 - v2)
-                register_1 = v2
+                if len(queue) > 1:
+                    v1 = queue.pop(0)
+                    v2 = queue.pop(0)
+                    queue.append(v1 - v2)
+                    register_1 = v2
+                else:
+                    queue.append(0)
             elif index == 9:
-                v1 = queue.pop(0)
-                v2 = queue.pop(0)
-                queue.append(v1 * v2)
-                register_1 = v2
+                if len(queue) > 1:
+                    v1 = queue.pop(0)
+                    v2 = queue.pop(0)
+                    queue.append(v1 * v2)
+                    register_1 = v2
+                else:
+                    queue.append(0)
             elif index == 10:
-                register_1 = queue.pop(0)
-                queue.push(0 if register_1 != 0 else 1)
+                if len(queue) != 0:
+                    register_1 = queue.pop(0)
+                    queue.append(0 if register_1 != 0 else 1)
+                else:
+                    queue.append(1)
             elif index == 11:
                 reader_index += value
 
@@ -162,5 +178,5 @@ def instructions_to_alphalang(code: list[str]) -> str:
 if __name__ == "__main__":
     # result = instructions_to_alphalang(open("./readable_codes/helloworld.ral").read().splitlines())
     # print(result)
-    code = open("./codes/helloworld.al").read()
+    code = open("./codes/howtoalphalang.al").read()
     interpret(code)

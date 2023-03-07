@@ -14,18 +14,19 @@ Storage is a queue. You can push to the bottom, and pop from the top.
 There are a total of 13 instructions;
 ```
 [value] refers to a numerical value (uppercase letters), or a reference to 01 / 02.
+if the next characters are not a value, treat the value as 0.
 
 00 - Do nothing.
 01 - Contains the last popped value
 02 - Queue's bottom value
 03 - Push [value]
-04 - Pop
+04 - Pop -> If queue doesn't have enough values, this does nothing.
 05 - Input -> Takes one character and pushes its UTF-8 value
-06 - Output -> Outputs the current top's UTF-8 value
-07 - Add -> Pops two values and pushes their sum
-08 - Substract -> Pops two values and pushes their difference (if A is popped first and B is popped second, then push A - B)
-09 - Multiply -> Pops two values and pushes their product
-10 - NOT -> Pops one value. If it's 0, push 1. If it's non-zero, push 0. in technical terms, queue.push(queue.pop() == 0)
+06 - Output -> Outputs the current top's UTF-8 value. If queue doesn't have enough values, print nothing.
+07 - Add -> Pops two values and pushes their sum. If queue doesn't have enough values, append 0.
+08 - Substract -> Pops two values and pushes their difference (if A is popped first and B is popped second, then push A - B). If queue doesn't have enough values, append 0.
+09 - Multiply -> Pops two values and pushes their product. If queue doesn't have enough values, append 0.
+10 - NOT -> Pops one value. If it's 0, push 1. If it's non-zero, push 0. in technical terms, queue.push(queue.pop() == 0). If queue is empty, append 1.
 11 - Skip [value] -> Skips that amount of instructions. Numerical values count as one grouped instruction (this means that "CEF" and "A" are both one instruction)
 12 - -1 -> Marks the numerical value as negative, separate from the actual value itself. This means that "mAB" will count as two instructions.
 ```
