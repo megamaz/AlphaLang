@@ -131,6 +131,8 @@ def instructions_to_alphalang(code: list[str]) -> str:
     Each instruction is separated by a newline, with the value being a space away.
     If the value is negative, just add a `-` sign, the code will detect it and add
     the `-1` instruction automatically.
+    For comments, start the line with #.
+    comments may only be added on their own line.
 
     - `PASS` -> Do nothing
     - `LASTP` -> Reference to last popped value
@@ -162,21 +164,26 @@ def instructions_to_alphalang(code: list[str]) -> str:
         "SKIP":11,
     }
     for i in code:
-        line = i.split(" ")
-        final += ALPHABET[(indexes[line[0]] + offset)%26]
-        offset = indexes[line[0]] + offset
-        offset %= 26
-        if len(line) != 1:
-            if line[1][0] == "-":
-                offset = (offset + 12) % 26
-                final += ALPHABET[offset]
-                final += base10_to_base26(int(line[1][1:]))
-            else:
-                final += base10_to_base26(int(line[1]))
+        try:
+            if i.startswith("#"):
+                pass
+            line = i.split(" ")
+            final += ALPHABET[(indexes[line[0]] + offset)%26]
+            offset = indexes[line[0]] + offset
+            offset %= 26
+            if len(line) != 1:
+                if line[1][0] == "-":
+                    offset = (offset + 12) % 26
+                    final += ALPHABET[offset]
+                    final += base10_to_base26(int(line[1][1:]))
+                else:
+                    final += base10_to_base26(int(line[1]))
+        except Exception as e:
+            print(f"error while transcribing: {e}")
     return final
 
 if __name__ == "__main__":
-    # result = instructions_to_alphalang(open("./readable_codes/helloworld.ral").read().splitlines())
-    # print(result)
+    result = instructions_to_alphalang(open("./readable_codes/helloworld.ral").read().splitlines())
+    print(result)
     code = open("./codes/howtoalphalang.al").read()
     interpret(code)
